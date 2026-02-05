@@ -1,8 +1,23 @@
-import { FC } from "react";
-import { Box, Paper, Typography, Chip, Link } from "@mui/material";
+import { type FC, useState } from "react";
+import {
+  Box,
+  Paper,
+  Typography,
+  Chip,
+  Link,
+  List,
+  ListItemButton,
+  ListItemText,
+  useTheme,
+  useMediaQuery,
+  IconButton,
+  Drawer,
+} from "@mui/material";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 
 export interface GrammarItem {
+  course_name: never;
   id: number;
   schedule: string;
   day: string;
@@ -17,143 +32,280 @@ interface GrammarViewerProps {
 }
 
 const GrammarViewer: FC<GrammarViewerProps> = ({ data, title }) => {
-  return (
-    <Box>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{
-          color: "#1976d2",
-          borderBottom: "2px solid #1976d2",
-          paddingBottom: "12px",
-          marginBottom: "24px",
-        }}
-      >
-        {title}
-      </Typography>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 3,
-          width: "100%",
-        }}
-      >
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const activeItem = data[selectedIndex];
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const SidebarContent = (
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <Box p={2} borderBottom="1px solid #f0f0f0">
+        <Typography variant="h6" color="primary" sx={{ fontWeight: "bold" }}>
+          {title}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          共 {data.length} 课
+        </Typography>
+      </Box>
+      <List sx={{ flexGrow: 1, overflowY: "auto", p: 1 }}>
         {data.map((item, idx) => (
-          <Paper
-            key={`grammar-${idx}`}
-            elevation={0}
+          <ListItemButton
+            key={item.id}
+            selected={selectedIndex === idx}
+            onClick={() => {
+              setSelectedIndex(idx);
+              if (isMobile) setMobileOpen(false);
+            }}
             sx={{
-              p: 3,
-              height: "1400px", // 强制固定高度确保整齐
-              display: "flex",
-              flexDirection: "column",
-              border: "1px solid #e0e0e0",
               borderRadius: 2,
-              textAlign: "left",
-              backgroundColor: "#fff",
-              overflow: "hidden", // 防止外部溢出
-              transition: "box-shadow 0.3s ease",
-              "&:hover": {
-                boxShadow: "0 6px 16px rgba(0,0,0,0.12)",
+              mb: 0.5,
+              "&.Mui-selected": {
+                backgroundColor: "rgba(25, 118, 210, 0.08)",
+                borderLeft: "4px solid #1976d2",
+                "&:hover": {
+                  backgroundColor: "rgba(25, 118, 210, 0.12)",
+                },
               },
             }}
           >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              mb={2}
-              pb={1}
-              borderBottom="1px solid #f0f0f0"
-              flexShrink={0} // 防止头部被压缩
-            >
-              <Chip
-                label={item.schedule}
-                color="primary"
-                sx={{ fontWeight: "bold", fontSize: "0.9rem" }}
-              />
-              {item.youtube_url && item.youtube_url.length > 0 && (
-                <Link
-                  href={item.youtube_url[0]}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                    textDecoration: "none",
-                    color: "#d32f2f",
-                    fontWeight: 500,
-                    "&:hover": { textDecoration: "underline" },
-                  }}
-                >
-                  <PlayCircleOutlineIcon fontSize="small" />
-                  观看视频
-                </Link>
-              )}
-            </Box>
+            <ListItemText
+              primary={item.schedule}
+              secondary={item.day ? item.day.split(" ")[0] : ""}
+              primaryTypographyProps={{
+                fontWeight: selectedIndex === idx ? "bold" : "medium",
+                color: selectedIndex === idx ? "primary.main" : "text.primary",
+              }}
+            />
+          </ListItemButton>
+        ))}
+      </List>
+    </Box>
+  );
 
-            <Box
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 140px)", // Adapt to parent container
+        gap: 0,
+        backgroundColor: "#f5f7fa",
+        borderRadius: 2,
+        overflow: "hidden",
+        border: "1px solid #e0e0e0",
+      }}
+    >
+      {/* Mobile Drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 280 },
+        }}
+      >
+        {SidebarContent}
+      </Drawer>
+
+      {/* Desktop Sidebar */}
+      <Box
+        sx={{
+          width: 280,
+          flexShrink: 0,
+          display: { xs: "none", md: "block" },
+          borderRight: "1px solid #e0e0e0",
+          backgroundColor: "#fff",
+        }}
+      >
+        {SidebarContent}
+      </Box>
+
+      {/* Main Content Area */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          backgroundColor: "#fff",
+        }}
+      >
+        {/* Header Toolbar */}
+        <Box
+          sx={{
+            p: 2,
+            borderBottom: "1px solid #f0f0f0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "#fff",
+          }}
+        >
+          <Box display="flex" alignItems="center">
+            {isMobile && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuOpenIcon />
+              </IconButton>
+            )}
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              {activeItem?.schedule || "Select a lesson"}
+            </Typography>
+            {activeItem?.course_name && (
+              <Chip
+                label="课程"
+                size="small"
+                sx={{ ml: 2, backgroundColor: "#e3f2fd", color: "#1976d2" }}
+              />
+            )}
+          </Box>
+
+          {activeItem?.youtube_url && activeItem.youtube_url.length > 0 && (
+            <Link
+              href={activeItem.youtube_url[0]}
+              target="_blank"
+              rel="noopener noreferrer"
               sx={{
-                flexGrow: 1,
-                overflowY: "auto", // 内容过多时内部滚动
-                pr: 1, // 给滚动条留点空间
-                "&::-webkit-scrollbar": {
-                  width: "6px",
-                },
-                "&::-webkit-scrollbar-track": {
-                  background: "#f1f1f1",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  background: "#888",
-                  borderRadius: "3px",
-                },
-                "&::-webkit-scrollbar-thumb:hover": {
-                  background: "#555",
-                },
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                textDecoration: "none",
+                color: "#d32f2f",
+                fontWeight: 600,
+                border: "1px solid #ffebee",
+                padding: "4px 12px",
+                borderRadius: "16px",
+                "&:hover": { backgroundColor: "#ffebee" },
               }}
             >
-              <Box
-                sx={{
-                  mb: 2,
-                  "& strong": { color: "#2c3e50" },
-                  fontSize: "1rem",
-                }}
-                dangerouslySetInnerHTML={{ __html: item.content }}
-              />
+              <PlayCircleOutlineIcon fontSize="small" />
+              观看视频
+            </Link>
+          )}
+        </Box>
 
-              <Box
-                className="grammar-explanation"
+        {/* Scrollable Content */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto",
+            p: 4,
+            "&::-webkit-scrollbar": { width: "6px" },
+            "&::-webkit-scrollbar-track": { background: "transparent" },
+            "&::-webkit-scrollbar-thumb": {
+              background: "#bdbdbd",
+              borderRadius: "3px",
+            },
+          }}
+        >
+          {activeItem ? (
+            <Box maxWidth="800px" margin="0 auto">
+              {/* Summary Section */}
+              <Paper
+                elevation={0}
                 sx={{
-                  pt: 2,
-                  borderTop: "1px dashed #e0e0e0",
-                  fontSize: "0.95rem",
-                  lineHeight: 1.8,
-                  color: "#444",
-                  "& strong": {
-                    color: "#1976d2",
-                    display: "block",
-                    marginTop: "16px",
-                    marginBottom: "8px",
-                    fontSize: "1.05rem",
-                  },
-                  "& ruby": {
-                    rubyPosition: "over",
-                    backgroundColor: "rgba(25, 118, 210, 0.05)",
-                    padding: "0 2px",
-                    borderRadius: "2px",
-                  },
-                  "& rt": {
-                    fontSize: "0.6em",
-                    color: "#666",
-                  },
+                  p: 3,
+                  mb: 4,
+                  backgroundColor: "#f8f9fa",
+                  border: "1px solid #e9ecef",
+                  borderRadius: 2,
+                  "& strong": { color: "#1565c0" },
                 }}
-                dangerouslySetInnerHTML={{ __html: item.explanation }}
-              />
+              >
+                <Typography
+                  variant="subtitle2"
+                  gutterBottom
+                  sx={{
+                    color: "#666",
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                  }}
+                >
+                  本课概览
+                </Typography>
+                <Box dangerouslySetInnerHTML={{ __html: activeItem.content }} />
+              </Paper>
+
+              {/* Detail Section */}
+              <Box>
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    mb: 3,
+                    pb: 1,
+                    borderBottom: "2px solid #f0f0f0",
+                  }}
+                >
+                  详细讲解
+                </Typography>
+
+                <Box
+                  className="grammar-explanation-content"
+                  sx={{
+                    fontSize: "1.05rem",
+                    lineHeight: 1.8,
+                    color: "#333",
+                    // Typography optimizations
+                    "& strong": {
+                      color: "#1976d2",
+                      display: "block",
+                      marginTop: "24px",
+                      marginBottom: "12px",
+                      fontSize: "1.2rem",
+                      fontWeight: 700,
+                      borderLeft: "4px solid #1976d2",
+                      paddingLeft: "12px",
+                      background:
+                        "linear-gradient(90deg, rgba(25,118,210,0.05) 0%, rgba(255,255,255,0) 100%)",
+                      paddingTop: "4px",
+                      paddingBottom: "4px",
+                    },
+                    "& ruby": {
+                      rubyPosition: "over",
+                    },
+                    "& rt": {
+                      fontSize: "0.6em",
+                      color: "#757575",
+                      userSelect: "none",
+                    },
+                    "& audio": {
+                      display: "block",
+                      margin: "16px 0",
+                      width: "100%",
+                      height: "40px",
+                      borderRadius: "20px",
+                    },
+                    // Collapse redundant breaks
+                    "& br + br": {
+                      display: "none",
+                    },
+                    // Add subtle list styling for bullet points (・)
+                    // Note: This relies on text structure, might be fragile, but generally helpful
+                  }}
+                  dangerouslySetInnerHTML={{ __html: activeItem.explanation }}
+                />
+              </Box>
             </Box>
-          </Paper>
-        ))}
+          ) : (
+            <Typography variant="body1" color="text.secondary" align="center">
+              请选择一课进行学习
+            </Typography>
+          )}
+        </Box>
       </Box>
     </Box>
   );

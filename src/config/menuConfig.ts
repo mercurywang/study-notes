@@ -26,6 +26,12 @@ export const menuConfig: MenuItem[] = [
         dataType: "json",
         dataSource: "n3",
       },
+      {
+        id: "n2",
+        title: "N2 文法会話",
+        dataType: "json",
+        dataSource: "n2",
+      },
     ],
   },
   {

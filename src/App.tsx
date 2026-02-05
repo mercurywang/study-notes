@@ -3,8 +3,10 @@ import { Box, CssBaseline, Toolbar, Typography, Paper } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import MarkdownViewer from "./components/MarkdownViewer";
 import GrammarViewer from "./components/GrammarViewer";
+import N2Viewer from "./components/N2Viewer";
 import n4Data from "./data/n4.json";
 import n3Data from "./data/n3.json";
+import n2Data from "./data/n2.json";
 import "./App.css";
 
 interface SelectedNote {
@@ -67,6 +69,23 @@ function App() {
       );
     }
 
+    if (selectedNote.dataType === "json" && selectedNote.dataSource === "n2") {
+      return (
+        <Paper
+          elevation={0}
+          sx={{
+            p: 0,
+            overflow: "hidden",
+            borderRadius: 2,
+            backgroundColor: "white",
+            minHeight: "calc(100vh - 120px)",
+          }}
+        >
+          <N2Viewer data={n2Data as any} />
+        </Paper>
+      );
+    }
+
     if (selectedNote.dataType === "json" && selectedNote.dataSource) {
       const jsonInfo = jsonDataMap[selectedNote.dataSource];
       if (jsonInfo) {
@@ -74,7 +93,8 @@ function App() {
           <Paper
             elevation={0}
             sx={{
-              p: 4,
+              p: 0, // Remove padding to allow viewer to use full space
+              overflow: "hidden", // Ensure clean edges
               borderRadius: 2,
               backgroundColor: "white",
               minHeight: "calc(100vh - 120px)",
