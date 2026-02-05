@@ -39,80 +39,50 @@ export const menuConfig: MenuItem[] = [
     title: "💻 IT",
     children: [
       {
-        id: "frontend",
-        title: "前端笔记",
-        dataType: "markdown",
-        path: "/notes/it/frontend.md",
-      },
-      {
-        id: "backend",
-        title: "后端笔记",
-        dataType: "markdown",
-        path: "/notes/it/backend.md",
-      },
-      {
-        id: "web-tech",
-        title: "🌐 Web 技术",
+        id: "frontend-group",
+        title: "前端",
         children: [
           {
-            id: "html",
-            title: "HTML",
+            id: "frontend",
+            title: "前端笔记",
             dataType: "markdown",
-            path: "/notes/it/web/HTML.md",
-          },
-          {
-            id: "js",
-            title: "JavaScript",
-            dataType: "markdown",
-            path: "/notes/it/web/JS.md",
-          },
-          {
-            id: "browser",
-            title: "浏览器原理",
-            dataType: "markdown",
-            path: "/notes/it/web/browser.md",
+            path: "/notes/it/frontend/frontend.md",
           },
           {
             id: "collections",
             title: "知识集合",
             dataType: "markdown",
-            path: "/notes/it/web/collections.md",
+            path: "/notes/it/frontend/collections.md",
           },
           {
             id: "event-emitter",
             title: "EventEmitter",
             dataType: "markdown",
-            path: "/notes/it/web/eventEmitter.md",
-          },
-        ],
-      },
-      {
-        id: "interview",
-        title: "👔 面试准备",
-        children: [
-          {
-            id: "performance",
-            title: "性能优化",
-            dataType: "markdown",
-            path: "/notes/it/interview/performance.md",
+            path: "/notes/it/frontend/eventEmitter.md",
           },
           {
             id: "flow",
             title: "面试流程",
             dataType: "markdown",
-            path: "/notes/it/interview/flow.md",
-          },
-          {
-            id: "java",
-            title: "Java",
-            dataType: "markdown",
-            path: "/notes/it/interview/java.md",
+            path: "/notes/it/frontend/flow.md",
           },
         ],
       },
       {
-        id: "algorithm",
-        title: "🧮 算法",
+        id: "backend-group",
+        title: "后端",
+        children: [
+          {
+            id: "backend",
+            title: "后端笔记",
+            dataType: "markdown",
+            path: "/notes/it/backend/backend.md",
+          },
+        ],
+      },
+      {
+        id: "algorithm-group",
+        title: "算法",
         children: [
           {
             id: "eratosthenes",

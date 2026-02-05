@@ -354,7 +354,7 @@ const N2Viewer: FC<N2ViewerProps> = ({ data }) => {
             </Box>
 
             {/* Lesson Detail Right Panel - Takes 40% */}
-            <Box sx={{ flex: 3, height: "100%", overflow: "hidden" }}>
+            <Box sx={{ flex: 2, height: "100%", overflow: "hidden" }}>
               {LessonDetail}
             </Box>
           </Box>
