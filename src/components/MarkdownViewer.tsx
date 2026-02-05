@@ -22,7 +22,12 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ filePath }) => {
           throw new Error("文件加载失败");
         }
         const text = await response.text();
-        setContent(text);
+        // 简单去除 Frontmatter
+        const contentWithoutFrontmatter = text.replace(
+          /^---\n[\s\S]*?\n---\n/,
+          "",
+        );
+        setContent(contentWithoutFrontmatter);
       } catch (err) {
         setError(err instanceof Error ? err.message : "未知错误");
         setContent("");

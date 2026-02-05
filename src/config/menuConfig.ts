@@ -44,6 +44,78 @@ export const menuConfig: MenuItem[] = [
         dataType: "markdown",
         path: "/notes/it/backend.md",
       },
+      {
+        id: "web-tech",
+        title: "🌐 Web 技术",
+        children: [
+          {
+            id: "html",
+            title: "HTML",
+            dataType: "markdown",
+            path: "/notes/it/web/HTML.md",
+          },
+          {
+            id: "js",
+            title: "JavaScript",
+            dataType: "markdown",
+            path: "/notes/it/web/JS.md",
+          },
+          {
+            id: "browser",
+            title: "浏览器原理",
+            dataType: "markdown",
+            path: "/notes/it/web/browser.md",
+          },
+          {
+            id: "collections",
+            title: "知识集合",
+            dataType: "markdown",
+            path: "/notes/it/web/collections.md",
+          },
+          {
+            id: "event-emitter",
+            title: "EventEmitter",
+            dataType: "markdown",
+            path: "/notes/it/web/eventEmitter.md",
+          },
+        ],
+      },
+      {
+        id: "interview",
+        title: "👔 面试准备",
+        children: [
+          {
+            id: "performance",
+            title: "性能优化",
+            dataType: "markdown",
+            path: "/notes/it/interview/performance.md",
+          },
+          {
+            id: "flow",
+            title: "面试流程",
+            dataType: "markdown",
+            path: "/notes/it/interview/flow.md",
+          },
+          {
+            id: "java",
+            title: "Java",
+            dataType: "markdown",
+            path: "/notes/it/interview/java.md",
+          },
+        ],
+      },
+      {
+        id: "algorithm",
+        title: "🧮 算法",
+        children: [
+          {
+            id: "eratosthenes",
+            title: "埃氏筛法",
+            dataType: "markdown",
+            path: "/notes/it/algorithm/eratosthenes.md",
+          },
+        ],
+      },
     ],
   },
   {
