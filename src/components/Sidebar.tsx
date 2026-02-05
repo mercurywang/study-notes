@@ -8,6 +8,7 @@ import {
   Drawer,
   Toolbar,
   Typography,
+  Divider,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuConfig } from "../config/menuConfig";
@@ -34,12 +35,18 @@ interface SidebarProps {
   drawerWidth: number;
   onSelectNote: (note: SelectedNote) => void;
   selectedId: string;
+  mobileOpen: boolean;
+  handleDrawerToggle: () => void;
+  isDesktopOpen: boolean;
 }
 
 const Sidebar: FC<SidebarProps> = ({
   drawerWidth,
   onSelectNote,
   selectedId,
+  mobileOpen,
+  handleDrawerToggle,
+  isDesktopOpen,
 }) => {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
     japanese: true,
@@ -73,6 +80,10 @@ const Sidebar: FC<SidebarProps> = ({
                 dataType: item.dataType || "markdown",
                 dataSource: item.dataSource,
               });
+              // Close mobile drawer on selection
+              if (mobileOpen) {
+                handleDrawerToggle();
+              }
             }
           }}
           sx={{
@@ -103,20 +114,8 @@ const Sidebar: FC<SidebarProps> = ({
     );
   };
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-          borderRight: "1px solid #e0e0e0",
-          backgroundColor: "#fafafa",
-        },
-      }}
-    >
+  const drawerContent = (
+    <div>
       <Toolbar
         sx={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -127,12 +126,62 @@ const Sidebar: FC<SidebarProps> = ({
           📚 学习笔记
         </Typography>
       </Toolbar>
+      <Divider />
       <Box sx={{ overflow: "auto", py: 1 }}>
         <List component="nav">
           {menuConfig.map((item) => renderMenuItem(item))}
         </List>
       </Box>
-    </Drawer>
+    </div>
+  );
+
+  return (
+    <Box
+      component="nav"
+      sx={{
+        width: { sm: isDesktopOpen ? drawerWidth : 0 },
+        flexShrink: { sm: 0 },
+        transition: "width 0.2s ease-out",
+      }}
+    >
+      {/* Mobile drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+            borderRight: "1px solid #e0e0e0",
+            backgroundColor: "#fafafa",
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      {/* Desktop drawer */}
+      <Drawer
+        variant="persistent"
+        open={isDesktopOpen}
+        sx={{
+          display: { xs: "none", sm: "block" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+            borderRight: "1px solid #e0e0e0",
+            backgroundColor: "#fafafa",
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+    </Box>
   );
 };
 

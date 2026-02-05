@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Box, CssBaseline, Toolbar, Typography, Paper } from "@mui/material";
+import {
+  Box,
+  CssBaseline,
+  Toolbar,
+  Typography,
+  Paper,
+  AppBar,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "./components/Sidebar";
 import MarkdownViewer from "./components/MarkdownViewer";
 import GrammarViewer from "./components/GrammarViewer";
@@ -27,9 +38,25 @@ const jsonDataMap: Record<string, { data: typeof n4Data; title: string }> = {
 
 function App() {
   const [selectedNote, setSelectedNote] = useState<SelectedNote | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleDrawerToggle = () => {
+    if (isMobile) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
+  };
 
   const handleSelectNote = (note: SelectedNote) => {
     setSelectedNote(note);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
   };
 
   const renderContent = () => {
@@ -128,17 +155,42 @@ function App() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            学习笔记
+          </Typography>
+        </Toolbar>
+      </AppBar>
       <Sidebar
         drawerWidth={DRAWER_WIDTH}
         onSelectNote={handleSelectNote}
         selectedId={selectedNote?.id || ""}
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+        isDesktopOpen={isSidebarOpen}
       />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: `calc(100% - ${DRAWER_WIDTH}px)`,
+          width: { sm: `calc(100% - ${isSidebarOpen ? DRAWER_WIDTH : 0}px)` },
           minHeight: "100vh",
           backgroundColor: "#f5f5f5",
         }}
