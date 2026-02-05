@@ -45,7 +45,7 @@ const GrammarViewer: FC<GrammarViewerProps> = ({ data, title }) => {
             elevation={0}
             sx={{
               p: 3,
-              height: "1200px", // 强制固定高度确保整齐
+              height: "1400px", // 强制固定高度确保整齐
               display: "flex",
               flexDirection: "column",
               border: "1px solid #e0e0e0",
